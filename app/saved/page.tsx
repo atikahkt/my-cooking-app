@@ -29,24 +29,27 @@ export default function SavedPage() {
     fetchRecipes();
   }, []);
 
-  async function handleSaveRecipe(e: React.FormEvent) {
+  async function handleSave(e: React.FormEvent) {
     e.preventDefault();
     const url = recipeUrl.trim();
-    if (!url || savingRecipe) return;
-    setSavingRecipe(true);
+    if (!url || saving) return;
+    setSaving(true);
     setSaveError(null);
-    const response = await fetch("/api/recipe", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ url }) });
+    const response = await fetch("/api/recipe", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ url }),
+    });
     const result = await response.json();
-    setSavingRecipe(false);
+    setSaving(false);
     if (response.ok && result.recipe) {
       setRecipes(prev => [result.recipe, ...prev]);
       setRecipeUrl("");
-      setShowAddRecipe(false);
+      setShowAdd(false);
     } else {
       setSaveError(result.duplicate ? "This recipe is already saved." : "Failed to save recipe.");
     }
   }
-}
 
   async function handleDelete(id: string) {
     const { error } = await supabase.from("recipes").delete().eq("id", id);
@@ -55,7 +58,6 @@ export default function SavedPage() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      {/* Sidebar */}
       <aside className="hidden md:flex flex-col w-56 bg-white border-r border-gray-100 px-4 py-6 fixed h-full z-10">
         <div className="mb-8 px-2">
           <span className="text-xl font-bold text-gray-900">FridgeChef</span>
@@ -65,6 +67,9 @@ export default function SavedPage() {
           <Link href="/" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50">
             <span>🏠</span><span>Home</span>
           </Link>
+          <Link href="/grocery" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:bg-gray-50">
+            <span>🛒</span><span>Grocery List</span>
+          </Link>
           <Link href="/saved" className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium bg-green-50 text-green-700">
             <span>🔖</span><span>Saved</span>
           </Link>
@@ -73,7 +78,6 @@ export default function SavedPage() {
       </aside>
 
       <main className="flex-1 md:ml-56 px-4 md:px-8 py-8 max-w-4xl">
-        {/* Header */}
         <div className="flex items-center justify-between mb-6">
           <div>
             <h1 className="text-xl font-bold text-gray-900">🔖 Saved Recipes</h1>
@@ -85,7 +89,6 @@ export default function SavedPage() {
           </button>
         </div>
 
-        {/* Add modal */}
         {showAdd && (
           <div className="fixed inset-0 bg-black/30 z-50 flex items-center justify-center px-4">
             <div className="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm">
@@ -94,7 +97,7 @@ export default function SavedPage() {
                 <input type="url" value={recipeUrl} onChange={e => setRecipeUrl(e.target.value)}
                   placeholder="Paste YouTube or Instagram URL..."
                   className="border border-gray-200 rounded-xl px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green-300" autoFocus />
-                  {saveError && <p className="text-xs text-red-500">{saveError}</p>}
+                {saveError && <p className="text-xs text-red-500">{saveError}</p>}
                 <div className="flex gap-2">
                   <button type="submit" disabled={saving || !recipeUrl.trim()}
                     className="flex-1 bg-green-600 text-white text-sm font-medium py-2.5 rounded-xl hover:bg-green-700 disabled:opacity-50 transition-colors">
@@ -110,7 +113,6 @@ export default function SavedPage() {
           </div>
         )}
 
-        {/* Recipe grid */}
         {loading ? (
           <p className="text-sm text-gray-400">Loading recipes...</p>
         ) : recipes.length === 0 ? (
