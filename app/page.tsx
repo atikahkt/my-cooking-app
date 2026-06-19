@@ -12,7 +12,6 @@ type Translation = { indonesian: string; english: string };
 const UNIT_PATTERN = /\b(?:gram|grams|gr|g|kg|ml|l|liter|litre|sdm|sdt|lembar|siung|butir|buah|tbsp|tsp|cup|cups|oz|lb|mg|ons|potong|ikat|bungkus|secukupnya)\b/i;
 const INGREDIENTS_SECTION_PATTERN = /^(?:bahan(?:\s*[-–—]\s*bahan)?|ingredients?)\s*:?\s*$/i;
 const OTHER_SECTION_PATTERN = /^(?:cara(?:\s*membuat|\s*masak)?|langkah(?:\s*[-–—]\s*langkah)?|prosedur|steps?|instructions?|method|directions?|notes?|tips?|garnish|penyajian|salad|pelengkap|saus|sauce|topping|serving)\s*:?\s*$/i;
-const [saveError, setSaveError] = useState<string | null>(null);
 
 const INGREDIENT_EMOJIS: Record<string, string> = {
   "telur": "🥚", "egg": "🥚", "ayam": "🍗", "chicken": "🍗",
