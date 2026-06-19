@@ -240,6 +240,7 @@ export default function Home() {
   const [showAddRecipe, setShowAddRecipe] = useState(false);
   const [surpriseRecipe, setSurpriseRecipe] = useState<Recipe | null>(null);
   const [groceryCount, setGroceryCount] = useState(0);
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   async function fetchIngredients() {
     const { data, error } = await supabase.from("ingredients").select("id, name, english_name, expiry_date").order("name");
